@@ -14,6 +14,10 @@
 #define YSIZE 500
 #include "algorithm.h"
 
+#pragma comment(lib, "kernel32.lib")
+
+HANDLE mutex;
+
 typedef struct THREAD_PARAMS
 {
     int yMin;
@@ -27,20 +31,28 @@ DWORD WINAPI threadFunc(LPVOID data)
 {
     struct THREAD_PARAMS myParams = *(struct THREAD_PARAMS*) data;
     int len;
-    FILE * file = myParams.file;
     char bgr[3];
+    DWORD mutexResult;
+
     int y, x;
     for(y=myParams.yMax;y>=myParams.yMin;y--)
     {
-        for(x=myParams.xMin;x<myParams.xMax;x++)
+        for(x=myParams.xMin; (x<myParams.xMax) && (x<XSIZE);x++)
         {
             getColorValuesAt(x * (2.0 / XSIZE) - 1.5, y * (2.0 / YSIZE) - 1.0,&bgr[2],&bgr[1],&bgr[0]);
 
-            len=fwrite(bgr,1,3,file);
-            if(-1==len || len!=3)
+            mutexResult = WaitForSingleObject(mutex, INFINITE);
+            if(mutexResult == WAIT_OBJECT_0)
             {
-                perror("write");
-                exit(4);
+                len=fwrite(bgr,1,3,myParams.file);
+                if(-1==len || len!=3)
+                {
+                    perror("write");
+                    exit(4);
+                }
+            }else if(mutexResult == WAIT_ABANDONED)
+            {
+                return -1;
             }
         }
     }
@@ -51,15 +63,30 @@ DWORD WINAPI threadFunc(LPVOID data)
 int main(int argc, char *argv[])
 {
     FILE *fd;
-    int len,x,y;
+    int len,i;
     char *dsc;
     char bgr[3];
     short svalue;
     int   lvalue;
     unsigned char header[54],*ptr=&header[0];
 
+    HANDLE * handles;
+    struct THREAD_PARAMS * tParams;
+    LPDWORD * lpThreadIds;
+    DWORD dWait;
+
     short threadNum = 1;
     if(argc >= 2) threadNum = atoi(argv[1]);
+
+    handles = (HANDLE*) malloc(sizeof(HANDLE) * threadNum);
+    tParams = (struct THREAD_PARAMS *) malloc(sizeof(struct THREAD_PARAMS) * threadNum);
+    lpThreadIds = (LPDWORD*) malloc(sizeof(LPDWORD) * threadNum);
+    mutex = CreateMutex(NULL, FALSE, NULL);
+    if(mutex == NULL)
+    {
+        printf("could not create mutex.");
+        return 1;
+    }
 
     getDescription(NULL,&len);
     if(NULL==(dsc=(char*)malloc(sizeof(char)*len)))
@@ -131,25 +158,16 @@ int main(int argc, char *argv[])
     }
 #pragma message("!!!!       Implement Multithreading here    !!!!")
 
-       /*MUTEX for file writing ?
-       HANDLE createMutex( LPSECURITYATTRIBUTES ...);
-        */
-
-    HANDLE * handles = malloc(sizeof(HANDLE) * threadNum);
-    struct THREAD_PARAMS * tParams = malloc(sizeof(struct THREAD_PARAMS) * threadNum);
-    LPDWORD * lpThreadIds = malloc(sizeof(LPDWORD) * threadNum);
-
-    int i;
     for(i=0; i<threadNum; i++)
     {
-        tParams[i].xMin = i * (floor(XSIZE/threadNum));
-        tParams[i].xMax = tParams[i].xMin + (floor(XSIZE/threadNum));
-        tParams[i].yMin = i * (floor(YSIZE/threadNum));
-        tParams[i].yMax = tParams[i].yMin + (floor(YSIZE/threadNum));
+        tParams[i].xMin = i * (floor(XSIZE/(float)threadNum));
+        tParams[i].xMax = tParams[i].xMin + (floor(XSIZE/(float)threadNum));
+        tParams[i].yMin = i * (floor(YSIZE/(float)threadNum));
+        tParams[i].yMax = tParams[i].yMin + (floor(YSIZE/(float)threadNum));
         tParams[i].file = fd;
         handles[i] = createThread(NULL, 0, threadFunc, &(tParams[i]), 0, &(lpThreadIds[i]));
     }
-    DWORD er = WaitForMultipleObjects(threadNum, handles, TRUE, 1000);
+    dWait = WaitForMultipleObjects(threadNum, handles, TRUE, 10000); //INFINITE
 
     fclose(fd);
 
