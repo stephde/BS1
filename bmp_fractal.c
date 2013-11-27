@@ -22,8 +22,6 @@ typedef struct THREAD_PARAMS
 {
     int yMin;
     int yMax;
-    int xMin;
-    int xMax;
     FILE * file;
 };
 
@@ -37,7 +35,7 @@ DWORD WINAPI threadFunc(LPVOID data)
     int y, x;
     for(y=myParams.yMax;y>=myParams.yMin;y--)
     {
-        for(x=myParams.xMin; (x<myParams.xMax) && (x<XSIZE);x++)
+        for(x=0; x<XSIZE ;x++)
         {
             getColorValuesAt(x * (2.0 / XSIZE) - 1.5, y * (2.0 / YSIZE) - 1.0,&bgr[2],&bgr[1],&bgr[0]);
 
@@ -69,14 +67,31 @@ int main(int argc, char *argv[])
     short svalue;
     int   lvalue;
     unsigned char header[54],*ptr=&header[0];
+    char * name = argv[2];
+    short extendedThreads = FALSE;
 
     HANDLE * handles;
+    HANDLE * handlesEx;
     struct THREAD_PARAMS * tParams;
+    struct THREAD_PARAMS * tParamsEx;
     LPDWORD * lpThreadIds;
+    LPDWORD * lpThreadIdsEx;
     DWORD dWait;
 
     short threadNum = 1;
     if(argc >= 2) threadNum = atoi(argv[1]);
+
+    if(threadNum > 128)
+    {
+        printf("To much threads!");
+        return -1;
+    }else if(threadNum > 64)
+    {
+        extendedThreads = TRUE;
+        handlesEx = (HANDLE*) malloc(sizeof(HANDLE) * (threadNum - 64));
+        tParamsEx = (struct THREAD_PARAMS *) malloc(sizeof(struct THREAD_PARAMS) * (threadNum - 64));
+        lpThreadIdsEx = (LPDWORD*) malloc(sizeof(LPDWORD) * (threadNum - 64));
+    }
 
     handles = (HANDLE*) malloc(sizeof(HANDLE) * threadNum);
     tParams = (struct THREAD_PARAMS *) malloc(sizeof(struct THREAD_PARAMS) * threadNum);
@@ -97,7 +112,7 @@ int main(int argc, char *argv[])
     getDescription(dsc,&len);
 
     printf("Calculate %s %d\n",dsc,getId());
-    fd=fopen("test.bmp","wb+");
+    fd=fopen(name,"wb+");
     if(NULL==fd)
     {
         perror("open"); exit(1);
@@ -160,14 +175,23 @@ int main(int argc, char *argv[])
 
     for(i=0; i<threadNum; i++)
     {
-        tParams[i].xMin = i * (floor(XSIZE/(float)threadNum));
-        tParams[i].xMax = tParams[i].xMin + (floor(XSIZE/(float)threadNum));
-        tParams[i].yMin = i * (floor(YSIZE/(float)threadNum));
-        tParams[i].yMax = tParams[i].yMin + (floor(YSIZE/(float)threadNum));
-        tParams[i].file = fd;
-        handles[i] = createThread(NULL, 0, threadFunc, &(tParams[i]), 0, &(lpThreadIds[i]));
+        if(i < 64)
+        {
+            tParams[i].yMin = i * (floor(YSIZE/(float)threadNum));
+            tParams[i].yMax = tParams[i].yMin + (floor(YSIZE/(float)threadNum));
+            if(i == (threadNum -1))tParams[i].yMax = YSIZE;
+            tParams[i].file = fd;
+            handles[i] = createThread(NULL, 0, threadFunc, &(tParams[i]), 0, &(lpThreadIds[i]));
+        }else{
+            tParamsEx[i%64].yMin = (i%64) * (floor(YSIZE/(float)threadNum));
+            tParamsEx[i%64].yMax = tParamsEx[i%64].yMin + (floor(YSIZE/(float)threadNum));
+            if(i == (threadNum -1))tParamsEx[i%64].yMax = YSIZE;
+            tParamsEx[i%64].file = fd;
+            handlesEx[i%64] = createThread(NULL, 0, threadFunc, &(tParamsEx[i%64]), 0, &(lpThreadIdsEx[i%64]));
+        }
     }
     dWait = WaitForMultipleObjects(threadNum, handles, TRUE, 10000); //INFINITE
+    if(extendedThreads == TRUE)dWait = WaitForMultipleObjects(threadNum-64, handlesEx, TRUE, 10000);
 
     fclose(fd);
 
