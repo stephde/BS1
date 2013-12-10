@@ -19,7 +19,6 @@ int threadCount = 0;
 void UpdateStarvationCount(PDISPATCHER_TASK nextThread)
 {
 	//increase starvation count of all threads which are not the nextTask
-	//set starvationCount of the nextTask to 0
 	int i;
 	for(i=0; i< threadCount; i++)
 	{
