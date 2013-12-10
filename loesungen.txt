@@ -75,3 +75,25 @@ KiComputeNewPriority
 1549    return;
 1550}
 238}
+
+
+3.4
+
+pspCreateThread / kestartthread
+
+
+liste loggen
+eintrag in die prozesssturktur
+564 thread gestartet
+359 Quantum wird gesetzt
+373 BasePriority and actuall priority
+466 insert tail list
+
+
+_KPRCB
+1083 currenthread, idle thread, next thread
+1277 liste maxium priority
+1274 wait list
+
+sceudular bearbeiten
+
