@@ -3,7 +3,7 @@ BS1 �bung 3
 
 1.1 
 
-Erläutern Sie Ihrem Tutor den Unterschied zwischen preemptiven und nicht-preemptiven 
+##Erläutern Sie Ihrem Tutor den Unterschied zwischen preemptiven und nicht-preemptiven 
 Scheduling.
 
 Bei preemptive Sceduling wird ein Prozess unterbrochen, falls ein Prozess, mit einer höhren Priorität, bereit ist. Dieser wird dann zuerst abgearbeitet (Interrupt).
