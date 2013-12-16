@@ -16,6 +16,11 @@ Der nicht-preemptiven ist in dieser Hinsicht besser, da Prozesse nur einmal abge
 
 Ein Quantum ist deutlich länger als im Dekstop-Bereich. Dadurch kann der Server komplexere Rechnungen schneller durchführen, allerdings reagiert er nicht so schnell auf I/O.
 
+##3.2
+
+![] (https://github.com/stephde/BS2/blob/uebung3/BS%203.2.png?raw=true "")
+
+
 ##3.3
 
 ###Eine neue Priorität wird für einen Thread mit Hilfe der Funktion KiComputeNewPriority berechnet. Erläutern sie zeilenweise genau den Ablauf der Funktion
