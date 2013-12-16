@@ -1,4 +1,3 @@
-
 #include <stdio.h>
 
 #include "dispatcher.h"
@@ -16,7 +15,7 @@ typedef struct _STARVATION_COUNT{
 STARVATION_COUNT * starvationCount = NULL;
 int threadCount = 0;
 
-void UpdateStarvationCount(PDISPATCHER_TASK nextThread)
+void updateStarvationCount(PDISPATCHER_TASK nextThread)
 {
 	//increase starvation count of all threads which are not the nextTask
 	int i;
@@ -45,6 +44,7 @@ PDISPATCHER_TASK Schedule(PDISPATCHER_TASK OldThread) {
 		if(starvationCount[i].cycles >= 10)
 		{
 			starvationCount[i].cycles = 0;
+			updateStarvationCount(starvationCount[i].task);
 			return starvationCount[i].task;
 		}
 	}
@@ -65,7 +65,7 @@ PDISPATCHER_TASK Schedule(PDISPATCHER_TASK OldThread) {
 	// get list entry for next task
 	NextTask = CONTAINING_RECORD(NextTaskListEntry, DISPATCHER_TASK, Link);
 
-	UpdateStarvationCount(NextTask);
+	updateStarvationCount(NextTask);
 
 	// re-insert task at list tail, but skip the "idle" thread
 	if (OldThread)
