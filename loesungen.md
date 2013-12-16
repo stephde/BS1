@@ -1,20 +1,22 @@
 BS1 �bung 3
 
 
-1.1 
+##1.1 
 
-##Erläutern Sie Ihrem Tutor den Unterschied zwischen preemptiven und nicht-preemptiven 
+#Erläutern Sie Ihrem Tutor den Unterschied zwischen preemptiven und nicht-preemptiven 
 Scheduling.
 
 Bei preemptive Sceduling wird ein Prozess unterbrochen, falls ein Prozess, mit einer höhren Priorität, bereit ist. Dieser wird dann zuerst abgearbeitet (Interrupt).
 Beim nicht-preemptiven Sceduling muss ein Prozess warten, bis der andere Prozess fertig ist unabhängig ob seine Prioriät höher ist.
 
-Welcher Ansatz ist zu bevorzugen, wenn der Systemdurchsatz maximiert werden 
+#Welcher Ansatz ist zu bevorzugen, wenn der Systemdurchsatz maximiert werden 
 soll?
 
-Der nicht-preemptiven ist in dieser Hinsicht besser, da Prozesse nur einmal abgearbeitet werden müssen. Beim preemptiven Sceduling kann es vorkommen, dass ein Prozess kurz vor dem Ende unterbrochen wird und er dann danach wieder von neuem starten muss.
+Der nicht-preemptiven ist in dieser Hinsicht besser, da Prozesse nur einmal abgearbeitet werden müssen. Beim preemptiven Sceduling kann es vorkommen, dass ein Prozess kurz vor dem Ende unterbrochen wird und er dann danach wieder von neuem starten muss. Problem sind allerdings Endlosschleifen.
 
-Wie versuchen Windows-Serversysteme den Durchsatz zu maximieren? 
+#Wie versuchen Windows-Serversysteme den Durchsatz zu maximieren? 
+
+Ein Quantum ist deutlich länger als im Dekstop-Bereich. Dadurch kann der Server komplexere Rechnungen schneller durchführen, allerdings reagiert er nicht so schnell auf I/O.
 
 3.3
 
