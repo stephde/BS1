@@ -18,7 +18,7 @@ Ein Quantum ist deutlich länger als im Dekstop-Bereich. Dadurch kann der Server
 
 ##3.3
 
-Eine neue Priorität wird für einen Thread mit Hilfe der Funktion KiComputeNewPriority berechnet. Erläutern sie zeilenweise genau den Ablauf der Funktion
+###Eine neue Priorität wird für einen Thread mit Hilfe der Funktion KiComputeNewPriority berechnet. Erläutern sie zeilenweise genau den Ablauf der Funktion
 
 ```
 214
@@ -47,7 +47,7 @@ Eine neue Priorität wird für einen Thread mit Hilfe der Funktion KiComputeNewP
 237    return Priority;
 ```
 
-Ein Boost der Threadpriorität kann beispielsweise mit der Funktion KiBoostPriorityThread erzeugt werden. Erläutern sie zeilenweise genau den Ablauf der Funktion!
+###Ein Boost der Threadpriorität kann beispielsweise mit der Funktion KiBoostPriorityThread erzeugt werden. Erläutern sie zeilenweise genau den Ablauf der Funktion!
 
 ```
 1526    KPRIORITY NewPriority;                                    
@@ -77,23 +77,15 @@ Ein Boost der Threadpriorität kann beispielsweise mit der Funktion KiBoostPrior
 1550
 ```
 
-3.4
+##3.4
 
-pspCreateThread / kestartthread
+### Erläutern Sie Ihrem Tutor den Unterschied zwischen Scheduler und Dispatcher!
 
+Der Dispatcher dient dazu, bei einem Kontextwechsel dem derzeit aktiven Prozess die CPU zu entziehen und anschließend dem nächsten Prozess die CPU zuzuteilen. Der Sceduler trifft die Entscheidung im Rahmen der Warteschlangenorganisation , welcher Prozess der nächste ist.
 
-liste loggen
-eintrag in die prozesssturktur
-564 thread gestartet
-359 Quantum wird gesetzt
-373 BasePriority and actuall priority
-466 insert tail list
+### Vergleichen Sie das Verhalten Ihrer Implementierung mit der Theorie (zum Beispiel mit Hilfe eines Gantt-Diagramms)!
+
+### Bewerten Sie die Laufzeitkomplexität Ihres Verfahrens!
 
 
-_KPRCB
-1083 currenthread, idle thread, next thread
-1277 liste maxium priority
-1274 wait list
-
-sceudular bearbeiten
 
