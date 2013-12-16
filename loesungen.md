@@ -1,28 +1,26 @@
-BS1 �bung 3
+#BS1 Übung 3
 
 
 ##1.1 
 
-#Erläutern Sie Ihrem Tutor den Unterschied zwischen preemptiven und nicht-preemptiven 
-Scheduling.
+###Erläutern Sie Ihrem Tutor den Unterschied zwischen preemptiven und nicht-preemptiven Scheduling.
 
 Bei preemptive Sceduling wird ein Prozess unterbrochen, falls ein Prozess, mit einer höhren Priorität, bereit ist. Dieser wird dann zuerst abgearbeitet (Interrupt).
 Beim nicht-preemptiven Sceduling muss ein Prozess warten, bis der andere Prozess fertig ist unabhängig ob seine Prioriät höher ist.
 
-#Welcher Ansatz ist zu bevorzugen, wenn der Systemdurchsatz maximiert werden 
-soll?
+###Welcher Ansatz ist zu bevorzugen, wenn der Systemdurchsatz maximiert werden soll?
 
 Der nicht-preemptiven ist in dieser Hinsicht besser, da Prozesse nur einmal abgearbeitet werden müssen. Beim preemptiven Sceduling kann es vorkommen, dass ein Prozess kurz vor dem Ende unterbrochen wird und er dann danach wieder von neuem starten muss. Problem sind allerdings Endlosschleifen.
 
-#Wie versuchen Windows-Serversysteme den Durchsatz zu maximieren? 
+###Wie versuchen Windows-Serversysteme den Durchsatz zu maximieren? 
 
 Ein Quantum ist deutlich länger als im Dekstop-Bereich. Dadurch kann der Server komplexere Rechnungen schneller durchführen, allerdings reagiert er nicht so schnell auf I/O.
 
-3.3
+##3.3
 
-KiComputeNewPriority
+Eine neue Priorität wird für einen Thread mit Hilfe der Funktion KiComputeNewPriority berechnet. Erläutern sie zeilenweise genau den Ablauf der Funktion
 
-{
+```
 214
 215    SCHAR Priority; // Priorität wird deklariert
 216
@@ -47,10 +45,11 @@ KiComputeNewPriority
 235    ASSERT((Thread->BasePriority == 0) || (Priority != 0));
 236
 237    return Priority;
+```
 
+Ein Boost der Threadpriorität kann beispielsweise mit der Funktion KiBoostPriorityThread erzeugt werden. Erläutern sie zeilenweise genau den Ablauf der Funktion!
 
-1524{
-1525
+```
 1526    KPRIORITY NewPriority;                                    
 1527
 1528    //
@@ -75,9 +74,8 @@ KiComputeNewPriority
 1547
 1548    KiReleaseThreadLock(Thread);
 1549    return;
-1550}
-238}
-
+1550
+```
 
 3.4
 
