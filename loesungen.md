@@ -99,6 +99,8 @@ Der Dispatcher dient dazu, bei einem Kontextwechsel dem derzeit aktiven Prozess 
 
 ### Vergleichen Sie das Verhalten Ihrer Implementierung mit der Theorie (zum Beispiel mit Hilfe eines Gantt-Diagramms)!
 
+![] (https://github.com/stephde/BS2/blob/uebung3/BS%203.2s.png?raw=true "")
+
 ### Bewerten Sie die Laufzeitkomplexität Ihres Verfahrens!
 
 
