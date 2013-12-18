@@ -18,6 +18,15 @@ Ein Quantum ist deutlich länger als im Dekstop-Bereich. Dadurch kann der Server
 
 ##3.2
 
+Gegeben sei ein Einprozessor-System welches Round-Robin-Scheduling mit 16 Prioritäts- stufen verwendet (0-15, 0 = niedrigste, 15 = höchste Priorität). Die Quantumslänge beträgt 20ms. Die Zeit für einen Kontextwechsel sei vernachlässigbar. Der Scheduler verwaltet laufende Threads und entscheidet ausschließlich nach dem Ablauf eines Quantums welcher Thread als nächstes laufen soll. Das Einfügen in die Warteliste erfolgt nach FIFO-Ordnung.
+Es sollen drei Threads mit den folgenden Eigenschaften ausgeführt werden:
+
+Zeichnen Sie ein Gantt-Diagramm unter der Annahme, dass alle drei Threads mit einer (statischen) Priorität von 8 ausgeführt werden.
+
+Jetzt soll Th3 mit einer Priorität von 9 ausgeführt werden. Weiterhin erhält Th1 eine Priorität von 7 und tritt nach 16ms in einen I/O-Wartezustand. Die Priorität von Th1 soll nach Beendigung der I/O-Operation um drei erhöht werden („Boost“). Th1 verlässt den Wartezustand bei t=45ms. Die Priorität von Th1 wird um eine Stufe am Quantumsende reduziert, bis wieder die Basispriorität erreicht ist. Zeichnen Sie ein Gantt-Diagramm für den beschriebenen Vorgang!
+
+
+
 ![] (https://github.com/stephde/BS2/blob/uebung3/BS%203.2.png?raw=true "")
 
 
