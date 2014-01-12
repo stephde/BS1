@@ -49,6 +49,30 @@ Code
 
 ##4.5
 
+##### Bis zu einem bestimmten Punkt wird der Wert Mem Usage des Prozesses Leaky App größer, 
+danach wird er erheblich kleiner um danach wieder anzuwachsen. Welcher Effekt im 
+Windows Kern bewirkt das beobachtete Verhalten? 
+
+Der Effekt der dies verursacht heißt WorkingSet Trimming.
+
+##### Mem Usage, Peak Mem Usage, Virtual Mem Size
+Working-Set, Maximaler Working Set, "benutzte Pagefiles"
+
+##### Standby Liste
+Alle Seiten der Liste gehören zu einem Workingset, deren Daten sind jedoch unverändert. Die  Seiteneinträge verweisen auf
+physikalische Seiten, sind allerdings mit "invalid“ und "transition“ gekennzeichnet.
+
+##### Modified Liste
+Alle Seiten der Liste gehören zu einem Workingset, deren Daten wurden jedoch unverändert und sind noch nicht auf die Platte/ins Pagefile geschrieben worden. Die Seiteneinträge verweisen weiterhin auf physikalische Seiten, sind aber mit „invalid“ und „transition“ gekennzeichnet. Die Seiten müssen vor der Wiederverwendung wieder auf die Platte geschrieben werden.
+
+##### Free Liste
+Hier sind die Seiten nicht mehrt in Verwendung und enthalten Daten, welche nicht gebraucht werden. Aus Sicherheit werden die Seitenen vor der nächsten Verwendung mit 0 gefüllt.
+
+##### Zero Liste
+Hier sind die Seite
+Seiten sind frei und mit ‚0’ gefüllt wie auf der Zeropage.
+
+
 
 
 
