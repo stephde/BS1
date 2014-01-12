@@ -33,7 +33,14 @@ Code
 
 ##4.3
 
-![] (https://github.com/stephde/BS2/blob/uebung3/BS%203.2.png?raw=true "")
+### FIFO
+
+![] (https://github.com/stephde/BS2/blob/master/U%CC%88bung%204/FIFO.png?raw=true "")
+
+### LRU
+
+![] (https://github.com/stephde/BS2/blob/master/U%CC%88bung%204/LRU.png?raw=true "")
+
 
 ##4.4
 
