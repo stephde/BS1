@@ -117,6 +117,29 @@ void *bs_malloc(size_t size)
 
 void bs_free(void *ptr)
 {
+	if(ptr != NULL)
+	{
+		FreeNode * node = head;
 
+		if(ptr = mem)
+		{
+			if(head->next == NULL)
+			{
+				head = NULL;
+				free(node);
+			}else{
+				head = head->next;
+				free(node);
+			}
+		}else{
+			while((mem[node->next->start]) == ptr)
+			{
+				node = node->next;
+			}
+			FreeNode * tmp = node->next;
+			FreeNode * next = node->next->next;
+			free(tmp);
+		}
+	}
 }
 #endif
