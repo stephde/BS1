@@ -15,7 +15,13 @@ typedef struct FreeNode {
 FreeNode* head = NULL;
 
 
-
+int getNextPowerOfTwo(int number) {
+	int powerOfTwo = 1;
+	while (number < powerOfTwo) {
+		powerOfTwo*=2;
+	}
+	return powerOfTwo;
+}
 
 
 
