@@ -17,6 +17,8 @@ FreeNode* head = NULL;
 
 
 
+
+
 #ifdef BUDDY
 void *bs_malloc(size_t size)
 {
@@ -29,57 +31,37 @@ void bs_free(void *ptr)
 }
 #endif 
 
+
+
+
 #ifdef FIRST
 void *bs_malloc(size_t size)
 {
 	char* result = NULL;
-	/*if(head == NULL && size < MAX_MEM)
-	{
-		result = mem;
-		head = (FreeNode*) malloc(sizeof(FreeNode));
-		head->next = NULL;
-		head->start = size;
-		head->size = MAX_MEM - size;
-	}else if(head != NULL)
-	{
-		FreeNode * node = head;
-		while(node != NULL && node->size < size)
-		{
-			node = node->next;
-		}
-
-		if(node != NULL) //found free space
-		{
-			result = mem[node->start];
-			node->size = node->size - size;
-			node->start = node->start + size;
-			/*if(size < node->length)
-			{
-
-			}else{
-
-			}*//*
-		}
-	}*/
-
-	if(head == NULL && size < MAX_MEM)
+	
+	// Nothing in List and size is not to big
+	if (head == NULL && size < MAX_MEM)
 	{
 		result = mem;
 		head = (FreeNode*) malloc(sizeof(FreeNode));
 		head->next = NULL;
 		head->start = 0;
 		head->size = size;
-	}else if(head != NULL){
+		printf("The block (%d Byte) has found its place between %d and %d\n",(int)size,0,(int)head->size-1);
+	} 
+	// Soemthing is in listpositionition
+	else if (head != NULL) 
+	{
 		FreeNode * node = head;
-		int pos = 0;
-		while(node != NULL && node->size < size)
+		int position = 0;
+		while(node != NULL /*&& node->size < size*/)
 		{
-			if((node->start - pos) > size)
+			if((node->start - position) > size)
 			{
-				result = &(mem[pos]);
+				result = &(mem[position]);
 				//create new node and insert#
 				FreeNode* newNode = (FreeNode*) malloc(sizeof(FreeNode));
-				newNode->start = pos;
+				newNode->start = position;
 				newNode->size = size;
 				FreeNode* tmp = head;
 				while(tmp->next != node)
@@ -87,12 +69,12 @@ void *bs_malloc(size_t size)
 					tmp = tmp->next;
 				}
 				tmp->next = newNode;
-				newNode->next = node;
+				newNode->next = node;	
+				printf("The block (%d Byte) has found its place between %d and %d\n",(int)newNode->size, newNode->start,newNode->start+(int)newNode->size-1);
 				break;
 			}
 			node = node->next;
 		}
-
 		if(node == NULL)//last block
 		{
 			FreeNode * tmp = head;
@@ -100,15 +82,17 @@ void *bs_malloc(size_t size)
 			{
 				tmp = tmp->next;
 			}
-			if((MAX_MEM - (tmp->start + tmp->size)) > size - 1)
+	//		printf("Last Block %d\n",(int)(MAX_MEM - (tmp->start + tmp->size)));
+			if((MAX_MEM - (tmp->start + tmp->size-1)) > size )
 			{
-				int pos = tmp->start+tmp->size+1;
-				result = &(mem[pos]);
+				int position = tmp->start+tmp->size;
+				result = &(mem[position]);
 				FreeNode* newNode = (FreeNode*) malloc(sizeof(FreeNode));
-				newNode->start = pos;
+				newNode->start = position;
 				newNode->size = size;
 				newNode->next = NULL;
 				tmp->next = newNode;
+				printf("The block (%d Byte) has found its place between %d and %d\n",(int)newNode->size,newNode->start,newNode->start+(int)newNode->size-1);
 			}
 		}
 	}
@@ -125,7 +109,7 @@ void bs_free(void *ptr)
 
 		if(ptr == &(mem[head->start]))
 		{
-			printf("erste Stelle\n");
+			printf("The block (%d Byte) between %d bis %d has been deleted!\n",(int)head->size,0,(int)head->size-1);
 			if(head->next == NULL)
 			{
 				head = NULL;
@@ -135,15 +119,13 @@ void bs_free(void *ptr)
 				free(node);
 			}
 		}else{
-			printf("zweite Stelle\n");
-			while(&(mem[node->next->start]) == ptr)
+			while(&(mem[node->next->start]) == ptr+1)
 			{
 				node = node->next;
 			}
-			printf("%d\n",node->next->start);
-			printf("%i\n",(int)node->next->size);
 			FreeNode * tmp = node->next;
 			node->next = node->next->next;
+			printf("The block (%d Byte) between %d bis %d has been deleted!\n", (int)tmp->size,tmp->start,tmp->start+(int)tmp->size-1);
 			free(tmp);
 		}
 	}
