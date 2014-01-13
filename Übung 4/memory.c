@@ -1,4 +1,5 @@
 #include "memory.h"
+#include <stdlib.h>
 
 /* Do not change !! */
 #define MAX_MEM 4096
@@ -6,11 +7,12 @@
 static char mem[MAX_MEM];
 
 
-typedef struct FreeNode{
-	FreeNode * next;
+typedef struct FreeNode {
+	struct FreeNode * next;
 	short start;
 	size_t size;
-}head* = NULL;
+} FreeNode;
+FreeNode* head = NULL;
 
 
 
@@ -74,7 +76,7 @@ void *bs_malloc(size_t size)
 		{
 			if((node->start - pos) > size)
 			{
-				result = mem[pos];
+				result = &(mem[pos]);
 				//create new node and insert#
 				FreeNode* newNode = (FreeNode*) malloc(sizeof(FreeNode));
 				newNode->start = pos;
@@ -101,11 +103,11 @@ void *bs_malloc(size_t size)
 			if((MAX_MEM - (tmp->start + tmp->size)) > size - 1)
 			{
 				int pos = tmp->start+tmp->size+1;
-				result = mem[pos];
+				result = &(mem[pos]);
 				FreeNode* newNode = (FreeNode*) malloc(sizeof(FreeNode));
 				newNode->start = pos;
 				newNode->size = size;
-				newNode->next = null;
+				newNode->next = NULL;
 				tmp->next = newNode;
 			}
 		}
@@ -121,8 +123,9 @@ void bs_free(void *ptr)
 	{
 		FreeNode * node = head;
 
-		if(ptr = mem)
+		if(ptr == &(mem[head->start]))
 		{
+			printf("erste Stelle\n");
 			if(head->next == NULL)
 			{
 				head = NULL;
@@ -132,12 +135,15 @@ void bs_free(void *ptr)
 				free(node);
 			}
 		}else{
-			while((mem[node->next->start]) == ptr)
+			printf("zweite Stelle\n");
+			while(&(mem[node->next->start]) == ptr)
 			{
 				node = node->next;
 			}
+			printf("%d\n",node->next->start);
+			printf("%i\n",(int)node->next->size);
 			FreeNode * tmp = node->next;
-			FreeNode * next = node->next->next;
+			node->next = node->next->next;
 			free(tmp);
 		}
 	}
