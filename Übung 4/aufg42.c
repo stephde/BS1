@@ -40,12 +40,13 @@ int main(int argc, char **argv)
 	if(NULL==ptr1)
 	    perror("4090 Bytes");
 	
+	
 	ptr2 = (char*)bs_malloc(5); //96 Bytes
 	if(NULL==ptr2)
 	    perror("5 Bytes");
-	
-    bs_free(ptr2); 
-	bs_free(ptr1);
+
+	bs_free(ptr2);
+	bs_free(ptr1); 
 	
 	return 0;
 }
