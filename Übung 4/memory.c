@@ -121,7 +121,7 @@ void bs_free(void *ptr)
 	{
 		FreeNode * node = head;
 
-		if(ptr = mem)
+		if(ptr == &(mem[head->start]))
 		{
 			if(head->next == NULL)
 			{
