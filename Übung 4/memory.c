@@ -3,6 +3,7 @@
 
 /* Do not change !! */
 #define MAX_MEM 4096
+#define ERROR 10000
 
 static char mem[MAX_MEM];
 
@@ -24,16 +25,144 @@ int getNextPowerOfTwo(int number) {
 }
 
 
+typedef struct TreeNode {
+	struct TreeNode * left;
+	struct TreeNode * right;
+	int start;
+	size_t size;
+	bool free;
+} TreeNode;
+
+TreeNode * constructTreeNode(int start, size_t size)
+{
+	TreeNode * node = (TreeNode*) malloc(sizeof(TreeNode));
+	node->start = start;
+	node->size = size;
+	node->left = NULL;
+	node->right = NULL;
+	node->free = true;
+	return node;
+}
+
+bool hasChildren(TreeNode * node)
+{
+	if(node->left == NULL && node->right == NULL)
+		return false;
+	return true;
+}
+
+void subdivide(TreeNode * node)
+{
+	if(!hasChildren(node))
+	{
+		node->free = false;
+		size_t newSize = (size_t) node->size / 2;
+		node->left = constructTreeNode(node->start, newSize);
+		node->right = constructTreeNode(node->start + (int)newSize, newSize);
+	}
+}
+
+void unite(TreeNode * node)
+{
+	if(node == NULL) //node is TreeHead
+	{
+		if(!hasChildren(treeHead))
+			treeHead->free = true;
+	}else{
+		if(hasChildren(node))
+		{
+			if(node->left->free && node->right->free)
+			{
+				free(node->left);
+				free(node->right);
+				node->left = NULL;
+				node->right = NULL;
+				node->free = true;
+				unite(getParent(node));
+			}
+		}
+	}
+}
+
+int findFreePos(TreeNode * node, size_t size)
+{
+	size_t desiredSize = (size_t) powerOfTwo((int)size);
+	int result = -1;
+	if(node->size > desiredSize)
+	{
+		//search children
+		subdivie(node);
+		if((result = findFreePos(node->left)) < 0)
+			result = findFeePos(node->right);
+	}else if(node->size == desiredSize && node->free){
+		//return this nodes position
+		result = node->start;
+	}
+	
+	return result;
+}
+
+TreeNode * getParent(void * ptr, TreeNode * node)
+{
+	TreeNode * result = NULL;
+
+	if(ptr == &(mem[node->start]))
+	{
+		//search Left
+		if(hasChildren(node))
+		{
+			if(hasChildren(node->left))
+				result = getParent(ptr, node->left);
+			else
+				result = node;
+		}
+	}else{
+		//search right
+		if(hasChildren(node))
+		{
+			if(hasChildren(node->right))
+				result = getParent(ptr, node->right);
+			else
+				result = node;
+		}else
+			result = ERROR;
+	}
+
+	return result;
+}
+
+TreeNode * treeHead = constructTreeNode(0, MAX_MEM);
+
 
 #ifdef BUDDY
-void *bs_malloc(size_t size)
+void* bs_malloc(size_t size)
 {
-   errno=ENOMEM;
-   return NULL;
+	void * result = NULL;
+	int pos = findFreePos(treeHead);
+
+	if(pos >= 0)
+		result = (void*) &(mem[result]);
+	
+    errno=ENOMEM;
+    return result;
 }
 
 void bs_free(void *ptr)
 {
+	TreeNode * parent = getParent(ptr, treeHead);
+
+	if(parent == ERROR)
+		return;
+	
+	if(parent != NULL)
+	{
+		if(ptr == &(mem[parent->left->start]))
+			parent->left->free = true;
+		else if(ptr == &(mem[parent->right->start]))
+			parent->right->free = true;
+	}
+	
+	unite(parent);
 }
 #endif 
 
