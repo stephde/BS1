@@ -1,5 +1,6 @@
 #include "memory.h"
 #include <stdlib.h>
+#include <stdbool.h>
 
 /* Do not change !! */
 #define MAX_MEM 4096
@@ -16,9 +17,10 @@ typedef struct FreeNode {
 FreeNode* head = NULL;
 
 
-int getNextPowerOfTwo(int number) {
+int getNextPowerOfTwo(int number) 
+{
 	int powerOfTwo = 1;
-	while (number < powerOfTwo) {
+	while (number > powerOfTwo) {
 		powerOfTwo*=2;
 	}
 	return powerOfTwo;
@@ -30,8 +32,12 @@ typedef struct TreeNode {
 	struct TreeNode * right;
 	int start;
 	size_t size;
-	bool free;
+	bool isFree;
 } TreeNode;
+
+
+TreeNode * treeHead = NULL; 
+
 
 TreeNode * constructTreeNode(int start, size_t size)
 {
@@ -40,7 +46,7 @@ TreeNode * constructTreeNode(int start, size_t size)
 	node->size = size;
 	node->left = NULL;
 	node->right = NULL;
-	node->free = true;
+	node->isFree = true;
 	return node;
 }
 
@@ -55,7 +61,7 @@ void subdivide(TreeNode * node)
 {
 	if(!hasChildren(node))
 	{
-		node->free = false;
+		node->isFree = false;
 		size_t newSize = (size_t) node->size / 2;
 		node->left = constructTreeNode(node->start, newSize);
 		node->right = constructTreeNode(node->start + (int)newSize, newSize);
@@ -67,18 +73,18 @@ void unite(TreeNode * node)
 	if(node == NULL) //node is TreeHead
 	{
 		if(!hasChildren(treeHead))
-			treeHead->free = true;
+			treeHead->isFree = true;
 	}else{
 		if(hasChildren(node))
 		{
-			if(node->left->free && node->right->free)
+			if(node->left->isFree && node->right->isFree)
 			{
 				free(node->left);
 				free(node->right);
 				node->left = NULL;
 				node->right = NULL;
-				node->free = true;
-				unite(getParent(node));
+				node->isFree = true;
+				//unite(getParent((mem[node->start]),treeHead ));
 			}
 		}
 	}
@@ -86,27 +92,29 @@ void unite(TreeNode * node)
 
 int findFreePos(TreeNode * node, size_t size)
 {
-	size_t desiredSize = (size_t) powerOfTwo((int)size);
+	size_t desiredSize = (size_t) getNextPowerOfTwo((int)size);
 	int result = -1;
 	if(node->size > desiredSize)
 	{
 		//search children
-		subdivie(node);
-		if((result = findFreePos(node->left)) < 0)
-			result = findFeePos(node->right);
-	}else if(node->size == desiredSize && node->free){
+		subdivide(node);
+		if((result = findFreePos(node->left,size)) < 0)
+			result = findFreePos(node->right,size);
+	}else if(node->size == desiredSize && node->isFree){
 		//return this nodes position
 		result = node->start;
+		node->isFree = false;
+		printf("Found at %d size: %d\n",result, (int)desiredSize);
 	}
 	
 	return result;
 }
 
-TreeNode * getParent(void * ptr, TreeNode * node)
+TreeNode* getParent(void * ptr, TreeNode * node)
 {
 	TreeNode * result = NULL;
 
-	if(ptr == &(mem[node->start]))
+	if((int)ptr >= (int)&(mem[node->start]) && (int)ptr < (int)&(mem[node->start + (int) (node->size/2) ]))
 	{
 		//search Left
 		if(hasChildren(node))
@@ -116,32 +124,38 @@ TreeNode * getParent(void * ptr, TreeNode * node)
 			else
 				result = node;
 		}
-	}else{
+	}else if (ptr < &(mem[node->start + (int) node->size]) && ptr >= &(mem[node->start + (int) (node->size/2)){
 		//search right
 		if(hasChildren(node))
 		{
+			printf("Search right\n");
 			if(hasChildren(node->right))
 				result = getParent(ptr, node->right);
 			else
 				result = node;
-		}else
-			result = ERROR;
+		}
+	} else 
+	{
+		printf("ERROR happens\n");
+		result = constructTreeNode(-1, (size_t) 0);
 	}
 
 	return result;
 }
 
-TreeNode * treeHead = constructTreeNode(0, MAX_MEM);
 
 
 #ifdef BUDDY
 void* bs_malloc(size_t size)
 {
+
+	if (treeHead == NULL)
+		treeHead = constructTreeNode(0, (size_t)MAX_MEM);
 	void * result = NULL;
-	int pos = findFreePos(treeHead);
+	int pos = findFreePos(treeHead,size);
 
 	if(pos >= 0)
-		result = (void*) &(mem[result]);
+		result = (void*) &(mem[pos]);
 	
     errno=ENOMEM;
     return result;
@@ -151,15 +165,23 @@ void bs_free(void *ptr)
 {
 	TreeNode * parent = getParent(ptr, treeHead);
 
-	if(parent == ERROR)
+	// ERROR
+	if(parent->start == -1)
+	{
+		printf("ERROR\n");
 		return;
-	
+	}
+		
 	if(parent != NULL)
 	{
-		if(ptr == &(mem[parent->left->start]))
-			parent->left->free = true;
-		else if(ptr == &(mem[parent->right->start]))
-			parent->right->free = true;
+		if(ptr == &(mem[parent->left->start])) {
+			parent->left->isFree = true;
+			printf("Gives left free\n");
+		}
+		else if(ptr == &(mem[parent->right->start])) {
+			parent->right->isFree = true;
+			printf("Gives right free\n");
+		}
 	}
 	
 	unite(parent);
