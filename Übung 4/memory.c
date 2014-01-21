@@ -120,7 +120,7 @@ TreeNode* getParent(void * ptr, TreeNode * node)
 	
 	if(hasChildren(node))
 	{
-		if(ptr == &(mem[node->left->start])
+		if(ptr == &(mem[node->left->start]))
 			result = node;
 		else 
 			result = getParent(ptr, node->left);
@@ -132,11 +132,11 @@ TreeNode* getParent(void * ptr, TreeNode * node)
 				result = getParent(ptr, node->right);
 		}
 		
-	} else if ( ptr == &(mem[node->start]) ) {
-			printf("Found paretns l\n");
-			result = node;
-			//empty = false;	
-	}
+	} /*else 
+	{
+		printf("ERROR happens\n");
+		result = constructTreeNode(-1, (size_t) 0);
+	} 
 	//}else if (ptr < &(mem[node->start + (int) node->size]) && ptr >= &(mem[node->start + (int) (node->size/2)){
 		//search right
 
@@ -168,25 +168,25 @@ void* bs_malloc(size_t size)
 
 void bs_free(void *ptr)
 {
-	TreeNode * parent = getParent(ptr, treeHead);
-
-	// ERROR
-	if(parent->start == -1)
-	{
-		printf("ERROR\n");
-		return;
-	}
-		
-	if(parent != NULL)
-	{
-		if(ptr == &(mem[parent->left->start])) {
-			parent->left->isFree = true;
+	TreeNode * parent = NULL;
+	if (hasChildren(treeHead)){
+		TreeNode * parent = getParent(ptr, treeHead);
+		// ERROR
+		if(parent==NULL)
+		{
+	//		printf("ERROR\n");
+			return;
 		}
-		else if(ptr == &(mem[parent->right->start])) {
-			parent->right->isFree = true;
+		else 
+		{
+			if(ptr == &(mem[parent->left->start])) {
+				parent->left->isFree = true;
+			}
+			else if(ptr == &(mem[parent->right->start])) {
+				parent->right->isFree = true;
+			}
 		}
 	}
-	
 	unite(parent);
 }
 #endif 
