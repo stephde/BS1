@@ -35,7 +35,7 @@ int main(int argc, char **argv)
 	
 	bs_free(ptr2);
 	bs_free(ptr3);
-    
+	
 	ptr1 = (char*)bs_malloc(4090); //96 Bytes
 	if(NULL==ptr1)
 	    perror("4090 Bytes");
