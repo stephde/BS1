@@ -109,37 +109,35 @@ int findFreePos(TreeNode * node, size_t size)
 	
 	return result;
 }
-
+bool empty = true;
 TreeNode* getParent(void * ptr, TreeNode * node)
 {
 	TreeNode * result = NULL;
 
-	if((int)ptr >= (int)&(mem[node->start]) && (int)ptr < (int)&(mem[node->start + (int) (node->size/2) ]))
+//	if((int)ptr >= (int)&(mem[node->start]) && (int)ptr < (int)&(mem[node->start + (int) (node->size/2) ])) {
+	//search Left
+	
+	if(hasChildren(node))
 	{
-		//search Left
-		if(hasChildren(node))
-		{
-			if(hasChildren(node->left))
-				result = getParent(ptr, node->left);
-			else
-				result = node;
-		}
-	}else if (ptr < &(mem[node->start + (int) node->size]) && ptr >= &(mem[node->start + (int) (node->size/2)){
+		if(hasChildren(node->left))
+			result = getParent(ptr, node->left);
+		
+		if (hasChildren(node->right))
+			result = getParent(ptr, node->right);
+		
+	} else if ( ptr == &(mem[node->start]) ) {
+			printf("Found paretns l\n");
+			result = node;
+			empty = false;	
+	}
+	//}else if (ptr < &(mem[node->start + (int) node->size]) && ptr >= &(mem[node->start + (int) (node->size/2)){
 		//search right
-		if(hasChildren(node))
-		{
-			printf("Search right\n");
-			if(hasChildren(node->right))
-				result = getParent(ptr, node->right);
-			else
-				result = node;
-		}
-	} else 
+
+	else if(empty)
 	{
 		printf("ERROR happens\n");
 		result = constructTreeNode(-1, (size_t) 0);
-	}
-
+	}  
 	return result;
 }
 
@@ -176,11 +174,9 @@ void bs_free(void *ptr)
 	{
 		if(ptr == &(mem[parent->left->start])) {
 			parent->left->isFree = true;
-			printf("Gives left free\n");
 		}
 		else if(ptr == &(mem[parent->right->start])) {
 			parent->right->isFree = true;
-			printf("Gives right free\n");
 		}
 	}
 	
