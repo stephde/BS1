@@ -109,7 +109,8 @@ int findFreePos(TreeNode * node, size_t size)
 	
 	return result;
 }
-bool empty = true;
+
+//bool empty = true;
 TreeNode* getParent(void * ptr, TreeNode * node)
 {
 	TreeNode * result = NULL;
@@ -119,25 +120,31 @@ TreeNode* getParent(void * ptr, TreeNode * node)
 	
 	if(hasChildren(node))
 	{
-		if(hasChildren(node->left))
+		if(ptr == &(mem[node->left->start])
+			result = node;
+		else 
 			result = getParent(ptr, node->left);
 		
-		if (hasChildren(node->right))
-			result = getParent(ptr, node->right);
+		if(result == NULL){ // no result yet, try other side
+			if (ptr == &(mem[node->right->start]))
+				result = node;
+			else 
+				result = getParent(ptr, node->right);
+		}
 		
 	} else if ( ptr == &(mem[node->start]) ) {
 			printf("Found paretns l\n");
 			result = node;
-			empty = false;	
+			//empty = false;	
 	}
 	//}else if (ptr < &(mem[node->start + (int) node->size]) && ptr >= &(mem[node->start + (int) (node->size/2)){
 		//search right
 
-	else if(empty)
+	/*else if(empty)
 	{
 		printf("ERROR happens\n");
 		result = constructTreeNode(-1, (size_t) 0);
-	}  
+	}  */
 	return result;
 }
 
