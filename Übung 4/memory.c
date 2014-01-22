@@ -4,7 +4,6 @@
 
 /* Do not change !! */
 #define MAX_MEM 4096
-#define ERROR 10000
 
 static char mem[MAX_MEM];
 
@@ -16,6 +15,16 @@ typedef struct FreeNode {
 } FreeNode;
 FreeNode* head = NULL;
 
+typedef struct TreeNode {
+	struct TreeNode * left;
+	struct TreeNode * right;
+	int start;
+	size_t size;
+	bool isFree;
+} TreeNode;
+TreeNode * treeHead = NULL; 
+
+
 
 int getNextPowerOfTwo(int number) 
 {
@@ -25,19 +34,6 @@ int getNextPowerOfTwo(int number)
 	}
 	return powerOfTwo;
 }
-
-
-typedef struct TreeNode {
-	struct TreeNode * left;
-	struct TreeNode * right;
-	int start;
-	size_t size;
-	bool isFree;
-} TreeNode;
-
-
-TreeNode * treeHead = NULL; 
-
 
 TreeNode * constructTreeNode(int start, size_t size)
 {
@@ -71,20 +67,22 @@ void subdivide(TreeNode * node)
 
 void unite(TreeNode* node) 
 {
-	
-	if (hasChildren(node->left))
-		unite(node->left);
-	if (hasChildren(node->right))
-		unite(node->right);
-	
-	if(node->left->isFree && node->right->isFree)
+	if(hasChildren(node))
 	{
-		printf("New room from %d to %d\n",node->left->start,node->left->start+(int)node->right->size+(int)node->right->size );
-		free(node->left);
-		free(node->right);
-		node->left = NULL;
-		node->right = NULL;
-		node->isFree = true;
+		if (hasChildren(node->left))
+			unite(node->left);
+		if (hasChildren(node->right))
+			unite(node->right);
+		
+		if(node->left->isFree && node->right->isFree)
+		{
+			printf("New room from %d to %d\n",node->left->start,node->left->start+(int)node->right->size+(int)node->right->size );
+			free(node->left);
+			free(node->right);
+			node->left = NULL;
+			node->right = NULL;
+			node->isFree = true;
+		}
 	}
 }
 
@@ -93,6 +91,7 @@ int findFreePos(TreeNode * node, size_t size)
 {
 	size_t desiredSize = (size_t) getNextPowerOfTwo((int)size);
 	int result = -1;
+	
 	if(!(!hasChildren(node) && !node->isFree))
 	{
 		if(node->size > desiredSize)
@@ -108,22 +107,15 @@ int findFreePos(TreeNode * node, size_t size)
 			printf("The block (%d Byte) has found its place between %d and %d\n",(int)size,result,result+(int)desiredSize);
 		}
 	}
+	
 	return result;
 }
 
-TreeNode* getParentOf(TreeNode * node)
-{
-	TreeNode* result = treeHead;
-	if (node == treeHead)
-		return NULL;
-	else if (node->left == result)
-		;
-	return node;
-}
 
 TreeNode* getParent(void * ptr, TreeNode * node)
 {
 	TreeNode * result = NULL;
+	
 	if(hasChildren(node))
 	{
 		if(ptr == &(mem[node->left->start]) && !hasChildren(node->left))
@@ -139,6 +131,7 @@ TreeNode* getParent(void * ptr, TreeNode * node)
 		}
 		
 	} 
+	
 	return result;
 }
 
@@ -156,8 +149,8 @@ void* bs_malloc(size_t size)
 	if(pos >= 0)
 		result = (void*) &(mem[pos]);
 	
-    errno=ENOMEM;
-    return result;
+    	errno=ENOMEM;
+    	return result;
 }
 
 void bs_free(void *ptr)
