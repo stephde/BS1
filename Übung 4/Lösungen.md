@@ -15,7 +15,7 @@ Als Paging bezeichnet man die Methode der Speicherverwaltung per Seitenadressier
 Ein Page-Fault tritt auf wenn ein Programm auf einen Speicherbereich zugreift, welcher nicht auf dem Arbeitsspeicher liegt, sondern eventuell auf die Festplatte ausgelagert ist. Diese Page muss man vom Betriebssystem geladen werden, damit das programm fortgesetzt werden kann.
 
 ##### Page-Replacement Algorithmus
-Dieser Algorythmus entscheidet, welche "Page" herausgeworfen wird, wenn neuer Speicher alloziert wird. Zum Beispiel gibt Least-Recently-Used.
+Dieser Algorythmus entscheidet, welche "Page" herausgeworfen wird, wenn neuer Speicher alloziert wird. Zum Beispiel gibt Least-Recently-Used oder First-In-First-Out
 
 ##### Swapping
 Swapping beschreibt das auslagern von Datein von einer höhren in einer tiefere Ebene. Zum Beispiel vom Hauptspeicher auf die Festplatte. Dies geschieht, wenn der Versuch Speicher zu allozieren fehrschlägt, weil nicht genügend Speicher zur Verfügung steht.
