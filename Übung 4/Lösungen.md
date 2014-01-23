@@ -12,7 +12,7 @@ Der virtuelle Speicher bezeichnet den vom tatsächlich vorhandenen Arbeitsspeich
 Als Paging bezeichnet man die Methode der Speicherverwaltung per Seitenadressierung durch Betriebssysteme. Es wird zwischen logischen und physischen Adressen unterschieden. Der logische Adresseraum wird in gleich große "Pages" aufgeteilt. Diese verweisen dann auf die Adressen im phsikalischen Adressraum.
 
 #####  Page-Fault
-Ein Page-Fault tritt auf wenn ein Programm auf einen Speicherbereich zugreift, welcher nicht auf dem Arbeitsspeicher liegt.
+Ein Page-Fault tritt auf wenn ein Programm auf einen Speicherbereich zugreift, welcher nicht auf dem Arbeitsspeicher liegt, sondern eventuell auf die Festplatte ausgelagert ist. Diese Page muss man vom Betriebssystem geladen werden, damit das programm fortgesetzt werden kann.
 
 ##### Page-Replacement Algorithmus
 Dieser Algorythmus entscheidet, welcher "Page" herausgeworfen wird, wenn neuer Speicher alloziert wird.
