@@ -6,7 +6,7 @@
 ###Erläutern Sie Ihrem Tutor folgende Begriffe und deren Verwendung im Kontext eines Betriebssystems!
 
 ##### Virtueller Speicher
-Der virtuelle Speicher bezeichnet den vom tatsächlich vorhandenen Arbeitsspeicher unabhängigen Adressraum, der einem Prozess vom Betriebssystem zur Verfügung gestellt wird. Dieser greift sowohl auf den RAM als auch auf die Festplatte zu.
+Der virtuelle Speicher bezeichnet den vom tatsächlich vorhandenen Arbeitsspeicher unabhängigen Adressraum, der einem Prozess vom Betriebssystem zur Verfügung gestellt wird. Durch dieses System hat jeder Prozess den Eindruck er könne auf den gesamten Hauptspeicher zugreifen, obwohl er eigentlich nur zugriff auf einen Teil davon hat. Dieser greift sowohl auf den RAM als auch auf die Festplatte zu.
 
 ##### Paging
 Als Paging bezeichnet man die Methode der Speicherverwaltung per Seitenadressierung durch Betriebssysteme. Es wird zwischen logischen und physischen Adressen unterschieden. Der logische Adresseraum wird in gleich große "Pages" aufgeteilt. Diese verweisen dann auf die Adressen im phsikalischen Adressraum.
