@@ -11,6 +11,8 @@ adressiert wird.
 - rwx Bits, Gruppen in Linux
 - acl (Acces Control List) in Windows : Wenn acl nicht enthalten ist, hat jeder Zugriff, wenn sie enthalten ist und leer, dann keiner.
 
+Authentizierung - System login
+Authorisierung - Ressourcenzugriff
 
 ##5.2
 
