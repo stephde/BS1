@@ -35,6 +35,9 @@ Bei beiden Varianten dürfen die neuen Nutzer nicht der Benutzergruppe Angestell
 
 ##5.3
 
+![] (http://upload.wikimedia.org/wikipedia/de/5/52/Kerberos_schema_Anders.png "") 
+
+
 ##5.4
 
 ### Nur Priviligierter User soll shutdown.exe ausführen
@@ -42,3 +45,6 @@ Bei beiden Varianten dürfen die neuen Nutzer nicht der Benutzergruppe Angestell
 Die ACL muss ein ACL enthalten. Er muss es den anderen nicht verbieten, da alles expliziet verboten wird.
 
 allow: privilegierterBenutzer
+
+
+Quelle: http://upload.wikimedia.org/wikipedia/de/5/52/Kerberos_schema_Anders.png
